@@ -8,26 +8,20 @@ base-image: ghcr.io/wayblueorg/hyprland-nvidia
 image-version: latest
 
 modules:
+  # ─── KDE Plasma via script (needs --allowerasing for Qt6 version conflict) ─
+  - type: script
+    scripts:
+      - install-kde.sh
+
   # ─── Additional packages via dnf ──────────────────────────────────────────
   - type: dnf
     install:
       install-weak-deps: false
       packages:
-        # KDE Plasma — second session for travel / external screen use
-        # Installed via dnf (not rpm-ostree) to use --allowerasing for Qt6
-        - plasma-desktop
-        - plasma-nm
-        - plasma-pa
-        - plasma-systemmonitor
-        - dolphin
-        - kscreen
-        - powerdevil
-        - kde-gtk-config
-        - sddm-kcm
-
-        # Terminal & multiplexing
-        - tmux
+        # Terminal, shell & multiplexing
         - alacritty
+        - tmux
+        - zsh
 
         # Password management
         - pass
@@ -68,11 +62,6 @@ modules:
         - unzip
         - htop
         - fastfetch
-
-    options:
-      # Allow dnf to resolve Qt6 version conflicts when installing KDE
-      # on top of the wayblue Hyprland base
-      - --allowerasing
 
   # ─── Enable services ───────────────────────────────────────────────────────
   - type: systemd
