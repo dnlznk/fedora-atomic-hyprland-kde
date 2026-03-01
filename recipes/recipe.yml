@@ -11,13 +11,6 @@ modules:
   # ─── RPM packages baked into the image ────────────────────────────────────
   - type: rpm-ostree
     install:
-      - rofi-wayland
-      - waylock
-      - hyprpaper          # wallpaper daemon
-      - hypridle           # idle daemon
-      - hyprpicker         # color picker
-      - xdg-desktop-portal-hyprland
-
       # KDE Plasma (minimal — no games, no office, no extras)
       - plasma-desktop
       - plasma-nm            # network manager applet
