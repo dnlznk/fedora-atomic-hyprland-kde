@@ -91,9 +91,5 @@ modules:
         - com.vscodium.codium
         - org.eclipse.Java
 
-  # ─── GTK / color scheme ───────────────────────────────────────────────────
-  - type: gnome-extensions   # no-op if not gnome, harmless
-    # We set dark theme via gsettings in dotfiles instead
-
   # ─── Signing ──────────────────────────────────────────────────────────────
   - type: signing
