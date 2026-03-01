@@ -72,11 +72,11 @@ modules:
 
   # ─── Flatpak remotes ───────────────────────────────────────────────────────
   - type: default-flatpaks
-    notify: true
-    system:
-      repo-url: https://dl.flathub.org/repo/flathub.flatpakrepo
-      repo-name: flathub
-      install:
+    configurations:
+      - scope: system
+        repo-url: https://dl.flathub.org/repo/flathub.flatpakrepo
+        repo-name: flathub
+        install:
         - com.valvesoftware.Steam
         - org.freedesktop.Platform.VulkanLayer.MangoHud
         - com.usebottles.bottles
@@ -90,9 +90,6 @@ modules:
         - org.kicad.KiCad
         - com.vscodium.codium
         - org.eclipse.Java
-    user:
-      repo-url: https://dl.flathub.org/repo/flathub.flatpakrepo
-      repo-name: flathub
 
   # ─── GTK / color scheme ───────────────────────────────────────────────────
   - type: gnome-extensions   # no-op if not gnome, harmless
