@@ -1,3 +1,4 @@
+# yaml-language-server: $schema=https://schema.blue-build.org/recipe-v1.json
 name: fedora-atomic-hyprland-kde
 description: Custom Fedora Atomic OS with Hyprland and KDE
 
@@ -123,7 +124,3 @@ modules:
   # ─── GTK / color scheme ───────────────────────────────────────────────────
   - type: gnome-extensions   # no-op if not gnome, harmless
     # We set dark theme via gsettings in dotfiles instead
-
-  # ─── Signing ──────────────────────────────────────────────────────────────
-  - type: signing
-    key: https://raw.githubusercontent.com/dnlznk/fedora-atomic-hyprland-kde/main/cosign.pub
