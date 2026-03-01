@@ -1,8 +1,8 @@
----
 name: fedora-atomic-hyprland-kde
 description: Custom Fedora Atomic OS with Hyprland and KDE
 
-# Use wayblue's Hyprland image as the base
+# Use wayblue's Hyprland + Nvidia image as the base (correct for T480 with MX150)
+# wayblue-hyprland-nvidia includes proprietary Nvidia drivers out of the box
 base-image: ghcr.io/wayblueorg/hyprland-nvidia
 image-version: latest
 
@@ -34,6 +34,7 @@ modules:
 
       # Terminal & shell utilities
       - kitty
+      - alacritty
       - tmux
       - vim
       - git
@@ -65,7 +66,6 @@ modules:
       - noto-fonts
       - noto-fonts-emoji
       - liberation-fonts
-      # Code New Roman is not in the Fedora repos — installed manually post-boot (see Phase 4.6)
 
       # Waydroid dependencies (kernel modules handled separately)
       - waydroid
