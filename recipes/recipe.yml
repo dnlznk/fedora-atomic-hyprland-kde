@@ -79,11 +79,6 @@ modules:
       - htop
       - neofetch
 
-    remove:
-      # Kinoite ships a minimal set — only remove what's actually present by default
-      - kwrite        # we use nvim / neovim
-      - konsole       # we use kitty
-
   # Note: Since Fedora 40, Kinoite ships some apps (like Discover) as Fedora Flatpaks
   # rather than RPMs. To remove Discover post-install run:
   #   flatpak remove org.kde.discover
