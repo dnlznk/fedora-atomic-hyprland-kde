@@ -1,45 +1,129 @@
 ---
-# yaml-language-server: $schema=https://schema.blue-build.org/recipe-v1.json
-# image will be published to ghcr.io/<user>/<name>
-name: template
-# description will be included in the image's metadata
-description: This is my personal OS image.
+name: fedora-atomic-hyprland-kde
+description: Custom Fedora Atomic OS with Hyprland and KDE
 
-# the base image to build on top of (FROM) and the version tag to use
-base-image: ghcr.io/ublue-os/silverblue-main
-image-version: 42 # latest is also supported if you want new updates ASAP
+# Use wayblue's Hyprland image as the base
+base-image: ghcr.io/wayblueorg/hyprland-nvidia
+image-version: latest
 
-# module configuration, executed in order
-# you can include multiple instances of the same module
 modules:
-  - type: files
-    files:
-      - source: system
-        destination: / # copies files/system/* (* means everything inside it) into your image's root folder /
-
-  - type: dnf
-    repos:
-      copr:
-        - atim/starship
+  # ─── RPM packages baked into the image ────────────────────────────────────
+  - type: rpm-ostree
     install:
-      packages:
-        - micro
-        - starship
+      # Hyprland ecosystem (wayblue base has hyprland, but we add companions)
+      - waybar
+      - rofi-wayland
+      - waylock
+      - hyprpaper          # wallpaper daemon
+      - hypridle           # idle daemon
+      - hyprpicker         # color picker
+      - xdg-desktop-portal-hyprland
+
+      # KDE Plasma (minimal — no games, no office, no extras)
+      - plasma-desktop
+      - plasma-nm            # network manager applet
+      - plasma-pa            # audio applet
+      - plasma-systemmonitor
+      - dolphin              # file manager (minimal but very useful with HDMI)
+      - kscreen              # display config (crucial for hotel room HDMI)
+      - powerdevil           # power management
+      - bluedevil            # bluetooth
+      - kde-gtk-config       # GTK theming in KDE
+      - sddm                 # display manager
+      - sddm-kcm             # SDDM config in KDE settings
+
+      # Terminal & shell utilities
+      - kitty
+      - tmux
+      - vim
+      - git
+      - pass
+      - gnupg2
+      - fzf
+      - ripgrep
+      - fd-find
+      - zsh
+
+      # Wayland / display utilities
+      - wl-clipboard
+      - cliphist
+      - grim                 # screenshot
+      - slurp                # region select
+      - swappy               # screenshot annotation
+      - brightnessctl
+      - playerctl
+
+      # QEMU / virt-manager
+      - virt-manager
+      - qemu-kvm
+      - libvirt
+      - libvirt-daemon-config-network
+      - virt-install
+      - bridge-utils
+
+      # Fonts (important for Waybar, Rofi icons)
+      - noto-fonts
+      - noto-fonts-emoji
+      - liberation-fonts
+      # Code New Roman is not in the Fedora repos — installed manually post-boot (see Phase 4.6)
+
+      # Waydroid dependencies (kernel modules handled separately)
+      - waydroid
+
+      # Misc system tools
+      - curl
+      - wget
+      - unzip
+      - p7zip
+      - htop
+      - neofetch
+
     remove:
-      packages:
-        # example: removing firefox (in favor of the flatpak)
-        # "firefox" is the main package, "firefox-langpacks" is a dependency
-        - firefox
-        - firefox-langpacks # also remove firefox dependency (not required for all packages, this is a special case)
+      # Kinoite ships a minimal set — only remove what's actually present by default
+      - kwrite        # we use nvim / neovim
+      - konsole       # we use kitty
 
+  # Note: Since Fedora 40, Kinoite ships some apps (like Discover) as Fedora Flatpaks
+  # rather than RPMs. To remove Discover post-install run:
+  #   flatpak remove org.kde.discover
+  # This cannot be done in the recipe's remove: block since it's not an RPM.
+
+  # ─── Enable services ───────────────────────────────────────────────────────
+  - type: systemd
+    system:
+      enabled:
+        - libvirtd.service
+        - waydroid-container.service
+        - sddm.service
+
+  # ─── Flatpak remotes ───────────────────────────────────────────────────────
   - type: default-flatpaks
-    configurations:
-      - notify: true # Send notification after install/uninstall is finished (true/false)
-        scope: system
-        # If no repo information is specified, Flathub will be used by default
-        install: # system flatpaks we want all users to have and not remove
-          - org.mozilla.firefox
-          - org.gnome.Loupe
-      - scope: user # Also add Flathub user repo, but no user packages
+    notify: true
+    system:
+      repo-url: https://dl.flathub.org/repo/flathub.flatpakrepo
+      repo-name: flathub
+      install:
+        - com.valvesoftware.Steam
+        - org.freedesktop.Platform.VulkanLayer.MangoHud
+        - com.usebottles.bottles
+        - com.github.tchx84.Flatseal
+        - com.discordapp.Discord
+        - com.github.IsmaelMartinez.teams_for_linux
+        - io.github.zen_browser.zen
+        - org.chromium.Chromium
+        - com.brave.Browser
+        - org.freecadweb.FreeCAD
+        - org.kicad.KiCad
+        - com.vscodium.codium
+        - org.eclipse.Java
+    user:
+      repo-url: https://dl.flathub.org/repo/flathub.flatpakrepo
+      repo-name: flathub
 
-  - type: signing # this sets up the proper policy & signing files for signed images to work fully
+  # ─── GTK / color scheme ───────────────────────────────────────────────────
+  - type: gnome-extensions   # no-op if not gnome, harmless
+    # We set dark theme via gsettings in dotfiles instead
+
+  # ─── Signing ──────────────────────────────────────────────────────────────
+  - type: signing
+    key: https://raw.githubusercontent.com/dnlznk/fedora-atomic-hyprland-kde/main/cosign.pub
