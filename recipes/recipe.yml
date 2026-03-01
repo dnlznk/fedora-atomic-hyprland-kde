@@ -8,71 +8,71 @@ base-image: ghcr.io/wayblueorg/hyprland-nvidia
 image-version: latest
 
 modules:
-  # ─── RPM packages baked into the image ────────────────────────────────────
-  - type: rpm-ostree
+  # ─── Additional packages via dnf ──────────────────────────────────────────
+  - type: dnf
     install:
-      # KDE Plasma (minimal — no games, no office, no extras)
-      - plasma-desktop
-      - plasma-nm            # network manager applet
-      - plasma-pa            # audio applet
-      - plasma-systemmonitor
-      - dolphin              # file manager (minimal but very useful with HDMI)
-      - kscreen              # display config (crucial for hotel room HDMI)
-      - powerdevil           # power management
-      - bluedevil            # bluetooth
-      - kde-gtk-config       # GTK theming in KDE
-      - sddm                 # display manager
-      - sddm-kcm             # SDDM config in KDE settings
+      install-weak-deps: false
+      packages:
+        # KDE Plasma — second session for travel / external screen use
+        # Installed via dnf (not rpm-ostree) to use --allowerasing for Qt6
+        - plasma-desktop
+        - plasma-nm
+        - plasma-pa
+        - plasma-systemmonitor
+        - dolphin
+        - kscreen
+        - powerdevil
+        - kde-gtk-config
+        - sddm-kcm
 
-      # Terminal & shell utilities
-      - kitty
-      - alacritty
-      - tmux
-      - vim
-      - git
-      - pass
-      - gnupg2
-      - fzf
-      - ripgrep
-      - fd-find
+        # Terminal & multiplexing
+        - tmux
+        - alacritty
 
-      # Wayland / display utilities
-      - wl-clipboard
-      - cliphist
-      - grim                 # screenshot
-      - slurp                # region select
-      - swappy               # screenshot annotation
-      - brightnessctl
-      - playerctl
+        # Password management
+        - pass
+        - gnupg2
 
-      # QEMU / virt-manager
-      - virt-manager
-      - qemu-kvm
-      - libvirt
-      - libvirt-daemon-config-network
-      - virt-install
-      - bridge-utils
+        # Search tools (fzf already bundled, ripgrep and fd-find are not)
+        - ripgrep
+        - fd-find
 
-      # Fonts (important for Waybar, Rofi icons)
-      - google-noto-fonts-all
-      - google-noto-emoji-fonts
-      - liberation-fonts
+        # Clipboard history
+        - cliphist
 
-      # Waydroid dependencies (kernel modules handled separately)
-      - waydroid
+        # Screenshot annotation (grim + slurp already bundled)
+        - swappy
 
-      # Misc system tools
-      - curl
-      - wget
-      - unzip
-      - p7zip
-      - htop
-      - fastfetch
+        # Virtualisation
+        - virt-manager
+        - qemu-kvm
+        - libvirt
+        - libvirt-daemon-config-network
+        - virt-install
+        - bridge-utils
 
-  # Note: Since Fedora 40, Kinoite ships some apps (like Discover) as Fedora Flatpaks
-  # rather than RPMs. To remove Discover post-install run:
-  #   flatpak remove org.kde.discover
-  # This cannot be done in the recipe's remove: block since it's not an RPM.
+        # Git (often already present but explicit is fine)
+        - git
+
+        # Fonts
+        - google-noto-fonts-all
+        - liberation-fonts
+        # Code New Roman — installed manually post-boot (see Phase 4.6)
+
+        # Waydroid
+        - waydroid
+
+        # Misc
+        - curl
+        - wget
+        - unzip
+        - htop
+        - fastfetch
+
+    options:
+      # Allow dnf to resolve Qt6 version conflicts when installing KDE
+      # on top of the wayblue Hyprland base
+      - --allowerasing
 
   # ─── Enable services ───────────────────────────────────────────────────────
   - type: systemd
@@ -80,7 +80,6 @@ modules:
       enabled:
         - libvirtd.service
         - waydroid-container.service
-        - sddm.service
 
   # ─── Flatpak remotes ───────────────────────────────────────────────────────
   - type: default-flatpaks
@@ -109,3 +108,6 @@ modules:
   # ─── GTK / color scheme ───────────────────────────────────────────────────
   - type: gnome-extensions   # no-op if not gnome, harmless
     # We set dark theme via gsettings in dotfiles instead
+
+  # ─── Signing ──────────────────────────────────────────────────────────────
+  - type: signing
