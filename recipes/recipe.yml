@@ -11,8 +11,6 @@ modules:
   # ─── RPM packages baked into the image ────────────────────────────────────
   - type: rpm-ostree
     install:
-      # Hyprland ecosystem (wayblue base has hyprland, but we add companions)
-      - waybar
       - rofi-wayland
       - waylock
       - hyprpaper          # wallpaper daemon
@@ -44,7 +42,6 @@ modules:
       - fzf
       - ripgrep
       - fd-find
-      - zsh
 
       # Wayland / display utilities
       - wl-clipboard
@@ -64,8 +61,8 @@ modules:
       - bridge-utils
 
       # Fonts (important for Waybar, Rofi icons)
-      - noto-fonts
-      - noto-fonts-emoji
+      - google-noto-fonts-all
+      - google-noto-emoji-fonts
       - liberation-fonts
 
       # Waydroid dependencies (kernel modules handled separately)
@@ -77,7 +74,7 @@ modules:
       - unzip
       - p7zip
       - htop
-      - neofetch
+      - fastfetch
 
   # Note: Since Fedora 40, Kinoite ships some apps (like Discover) as Fedora Flatpaks
   # rather than RPMs. To remove Discover post-install run:
