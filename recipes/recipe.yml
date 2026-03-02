@@ -69,6 +69,10 @@ modules:
         - fastfetch
         - stow
 
+    remove:
+      packages:
+        - firefox
+
   # ─── Enable services ───────────────────────────────────────────────────────
   - type: systemd
     system:
