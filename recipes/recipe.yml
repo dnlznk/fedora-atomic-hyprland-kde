@@ -67,6 +67,7 @@ modules:
         - unzip
         - htop
         - fastfetch
+        - stow
 
   # ─── Enable services ───────────────────────────────────────────────────────
   - type: systemd
