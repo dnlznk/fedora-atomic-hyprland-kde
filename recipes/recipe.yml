@@ -13,6 +13,11 @@ modules:
     scripts:
       - install-kde.sh
 
+  # ─── SDDM astronaut theme ─────────────────────────────────────────────────
+  - type: script
+    scripts:
+      - install-sddm-theme.sh
+
   # ─── Additional packages via dnf ──────────────────────────────────────────
   - type: dnf
     install:

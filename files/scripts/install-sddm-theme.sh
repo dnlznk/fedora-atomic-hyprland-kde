@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+set -oue pipefail
+
+# Install SDDM astronaut theme dependencies
+dnf install -y \
+    qt6-qtsvg \
+    qt6-qtvirtualkeyboard \
+    qt6-qtmultimedia
+
+# Clone the theme into the system SDDM themes directory
+git clone -b master --depth 1 \
+    https://github.com/Keyitdev/sddm-astronaut-theme.git \
+    /usr/share/sddm/themes/sddm-astronaut-theme
+
+# Select pixel_sakura variant
+sed -i 's|^ConfigFile=.*|ConfigFile=Themes/pixel_sakura.conf|' \
+    /usr/share/sddm/themes/sddm-astronaut-theme/metadata.desktop
+
+# Point SDDM at the theme — overwrites wayblue's default maldives config
+mkdir -p /etc/sddm.conf.d
+cat > /etc/sddm.conf.d/theme.conf << 'EOF'
+[Theme]
+Current=sddm-astronaut-theme
+EOF
