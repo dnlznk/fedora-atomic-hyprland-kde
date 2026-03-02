@@ -16,6 +16,10 @@ git clone -b master --depth 1 \
 sed -i 's|^ConfigFile=.*|ConfigFile=Themes/pixel_sakura.conf|' \
     /usr/share/sddm/themes/sddm-astronaut-theme/metadata.desktop
 
+# Cop and instally fonts
+sudo cp -r /usr/share/sddm/themes/sddm-astronaut-theme/Fonts/* /usr/share/fonts/
+sudo fc-cache -f
+
 # Point SDDM at the theme — overwrites wayblue's default maldives config
 mkdir -p /etc/sddm.conf.d
 cat > /etc/sddm.conf.d/theme.conf << 'EOF'
