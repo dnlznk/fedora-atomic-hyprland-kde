@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 set -oue pipefail
 
-# 1. Install KDE Plasma packages
-# --allowerasing is key here to resolve Wayblue/KDE Qt6 version mismatches
+# Install KDE Plasma as a second session on top of the wayblue Hyprland base.
+# --allowerasing is required to allow dnf to upgrade Qt6 to a consistent version
+# — without it the solver refuses because wayblue's pinned Qt6 conflicts with
+# the newer Qt6 that KDE's dependencies pull in.
 dnf install -y --allowerasing \
     plasma-desktop \
     plasma-nm \
@@ -13,14 +15,3 @@ dnf install -y --allowerasing \
     powerdevil \
     kde-gtk-config \
     sddm-kcm
-
-# 2. Final Cleanup (Crucial for Image Builds)
-# 'clean all' removes cached packages and metadata
-dnf clean all
-
-# 3. Manual Cache Removal (The "100%" fix)
-# Sometimes dnf/dnf5 leaves behind plugin data or empty directories
-# We wipe /var/cache/dnf (or dnf5) and /var/log to keep the image pristine
-rm -rf /var/cache/dnf
-rm -rf /var/cache/libdnf5
-rm -rf /var/log/*
