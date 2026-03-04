@@ -12,10 +12,9 @@ THEME_PATH="/usr/share/sddm/themes/sddm-astronaut-theme"
 
 # 3. Create the writable directory and clone
 mkdir -p "/usr/local/share/sddm/themes"
-    git clone -b master --depth 1 \
-        https://github.com/Keyitdev/sddm-astronaut-theme.git \
-            "$THEME_PATH"
-fi
+git clone -b master --depth 1 \
+https://github.com/Keyitdev/sddm-astronaut-theme.git \
+"$THEME_PATH"
 
 # 4. Select pixel_sakura variant in the WRITABLE path
 sed -i 's|^ConfigFile=.*|ConfigFile=Themes/pixel_sakura.conf|' \
