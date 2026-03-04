@@ -5,12 +5,9 @@ set -oue pipefail
 dnf install -y \
     qt6-qtsvg \
     qt6-qtvirtualkeyboard \
-    qt6-qtmultimedia \
-    git
+    qt6-qtmultimedia
 
 # 2. Define the paths
-# WRITABLE_PATH is where the files actually live (editable later)
-# SYSTEM_PATH is where SDDM expects them to be
 WRITABLE_PATH="/usr/local/share/sddm/themes/sddm-astronaut-theme"
 SYSTEM_PATH="/usr/share/sddm/themes/sddm-astronaut-theme"
 
@@ -36,8 +33,8 @@ mkdir -p /usr/share/fonts/sddm-astronaut
 cp -r "$WRITABLE_PATH/Fonts/"* /usr/share/fonts/sddm-astronaut/
 
 # 7. Standard Config (No ThemeDir needed now!)
-mkdir -p /usr/lib/sddm.conf.d
-cat > /usr/lib/sddm.conf.d/theme.conf << 'EOF'
+mkdir -p /etc/sddm.conf.d
+cat > /etc/sddm.conf.d/theme.conf << 'EOF'
 [Theme]
 Current=sddm-astronaut-theme
 EOF
