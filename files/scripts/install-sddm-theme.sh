@@ -8,34 +8,36 @@ dnf install -y \
     qt6-qtmultimedia \
     git
 
-# 2. Set the writable paths
-THEME_DIR="/usr/local/share/sddm/themes/sddm-astronaut-theme"
-FONT_DIR="/usr/local/share/fonts/sddm-astronaut"
+# 2. Define the paths
+# WRITABLE_PATH is where the files actually live (editable later)
+# SYSTEM_PATH is where SDDM expects them to be
+WRITABLE_PATH="/usr/local/share/sddm/themes/sddm-astronaut-theme"
+SYSTEM_PATH="/usr/share/sddm/themes/sddm-astronaut-theme"
 
+# 3. Create the writable directory and clone
 mkdir -p "/usr/local/share/sddm/themes"
-mkdir -p "$FONT_DIR"
-
-# 3. Clone the theme
-if [ ! -d "$THEME_DIR" ]; then
+if [ ! -d "$WRITABLE_PATH" ]; then
     git clone -b master --depth 1 \
         https://github.com/Keyitdev/sddm-astronaut-theme.git \
-        "$THEME_DIR"
+        "$WRITABLE_PATH"
 fi
 
-# 4. Select pixel_sakura variant
+# 4. Select pixel_sakura variant in the WRITABLE path
 sed -i 's|^ConfigFile=.*|ConfigFile=Themes/pixel_sakura.conf|' \
-    "$THEME_DIR/metadata.desktop"
+    "$WRITABLE_PATH/metadata.desktop"
 
-# 5. Copy Fonts (Putting them in /usr/local/share/fonts keeps them editable too)
-cp -r "$THEME_DIR/Fonts/"* "$FONT_DIR/"
+# 5. THE TRICK: Create the symlink
+# We link the standard path to our writable path
+mkdir -p /usr/share/sddm/themes
+ln -s "$WRITABLE_PATH" "$SYSTEM_PATH"
 
-# 6. Tell SDDM to look in /usr/local/ (VERY IMPORTANT)
-# By default, SDDM only looks in /usr/share/sddm/themes
+# 6. Fonts (Keep these in /usr/share for reliability)
+mkdir -p /usr/share/fonts/sddm-astronaut
+cp -r "$WRITABLE_PATH/Fonts/"* /usr/share/fonts/sddm-astronaut/
+
+# 7. Standard Config (No ThemeDir needed now!)
 mkdir -p /usr/lib/sddm.conf.d
 cat > /usr/lib/sddm.conf.d/theme.conf << 'EOF'
 [Theme]
-ThemeDir=/usr/local/share/sddm/themes
 Current=sddm-astronaut-theme
 EOF
-
-# Note: No 'dnf clean' or 'rm' here to avoid the BlueBuild cache mount error!
