@@ -50,7 +50,7 @@ modules:
         - virt-install
         - bridge-utils
 
-        # Git (often already present but explicit is fine)
+        # Git
         - git
 
         # Fonts
@@ -68,6 +68,7 @@ modules:
         - htop
         - fastfetch
         - stow
+        - fzf
 
     remove:
       packages:
