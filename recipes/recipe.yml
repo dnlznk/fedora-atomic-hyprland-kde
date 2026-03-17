@@ -58,9 +58,6 @@ modules:
         - liberation-fonts
         # Code New Roman — installed manually post-boot (see Phase 4.6)
 
-        # Waydroid
-        - waydroid
-
         # Misc
         - curl
         - wget
@@ -79,7 +76,6 @@ modules:
     system:
       enabled:
         - libvirtd.service
-        - waydroid-container.service
 
   # ─── Flatpak remotes ───────────────────────────────────────────────────────
   - type: default-flatpaks
