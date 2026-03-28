@@ -65,7 +65,7 @@ modules:
         - htop
         - fastfetch
         - stow
-        - fzf
+        - tealdeer
 
     remove:
       packages:
