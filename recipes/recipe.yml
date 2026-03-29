@@ -32,6 +32,10 @@ modules:
         - pass
         - gnupg2
 
+        # Gnome Keyring for Wifi password storage
+        - gnome-keyring
+        - libsecret
+
         # Search tools (fzf already bundled, ripgrep and fd-find are not)
         - ripgrep
         - fd-find
